@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>SimpleScanf</title>
+	
+	<meta name="description" content="">
+	<meta name="image" content="">
+	
+	<meta itemprop="name" content="SimpleScanf">
+	<meta itemprop="description" content="">
+	<meta itemprop="image" content="">
+	
+	<meta name="og:title" content="SimpleScanf">
+	<meta name="og:description" content="">
+	
+	<meta name="og:url" content="https://kumarsourav.github.io/posts/simplescanf/">
+	<meta name="og:site_name" content="SimpleScanf">
+	<meta name="og:type" content="article">
+	
+	<meta name="article:tag" content="">
+	<link rel="stylesheet" type="text/css" href="https://kumarsourav.github.io/css/style.css">
+	
+	
+</head>
+
+<body>
+
+<header>
+	
+	<a href="https://kumarsourav.github.io/" style="float: left;color:#42a5f5;">/dev/random</a>
+	
+	&nbsp;&nbsp;<a href="https://kumarsourav.github.io/archives/" style="color:#777;">Archives</a>&nbsp;&nbsp;<a href="https://kumarsourav.github.io/about/" style="color:#777;">About</a>
+	
+	<a href="https://kumarsourav.github.io/posts/index.xml" style="color:#777;float: right;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+</header>
+
+
+<div class="content">
+  <h5>SimpleScanf</h5>
+  <aside></aside>
+  <p>
+
+<p><em><strong>scanf()</strong></em> is widely used in c to read inputs from standard input(<strong>stdin</strong>).
+I wrote a simple scanf routine to understand how input can be read from <strong>stdin</strong>
+just like <code>scanf()</code>.
+It is not optimized but works. This article documents the learning process.</p>
+
+<p>To keep things simple, my simplescanf() routine handles only basic inputs:</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">1. %d (integers)
+2. %c (char)
+3. %s (string)</code></pre></div>
+<p>It does not support assignment suppression character <code>*</code>, field width or any other features.</p>
+
+<h2 id="function-prototype">Function Prototype</h2>
+
+<p>scanf()  takes variable number of arguments. We don&rsquo;t know how many variables we are going to read from stdin.
+Hence, the prototype of simplescanf() also takes variable argument and is declared as</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#b00040">int</span> simplescanf(<span style="color:#008000;font-weight:bold">const</span> <span style="color:#b00040">char</span> <span style="color:#666">*</span>fmt, ...)</code></pre></div>
+<p>It returns the number of arguments it read from stdin.</p>
+
+<h2 id="reading-variable-input">Reading variable input</h2>
+
+<p>varibale arguments in c can be read using <strong>va_start()</strong>, <strong>va_arg()</strong> and <strong>va_end()</strong> routines.
+<code>man va_arg</code> gives the details regarding these rotuines. Below is a simple example with inline
+comment to understand how to use variable arguments in c.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#408080;font-style:italic">//accepts variable argument
+</span><span style="color:#408080;font-style:italic"></span><span style="color:#b00040">void</span> <span style="color:#00f">foo</span>(<span style="color:#008000;font-weight:bold">const</span> <span style="color:#b00040">char</span> <span style="color:#666">*</span>fmt, ...)
+{
+        <span style="color:#b00040">char</span> <span style="color:#666">*</span>str;
+        <span style="color:#b00040">int</span> <span style="color:#666">*</span>val;
+        va_list ap;
+
+        <span style="color:#408080;font-style:italic">//intialize ap to process variable arguments
+</span><span style="color:#408080;font-style:italic"></span>        <span style="color:#408080;font-style:italic">//fmt is the last param before variable arg starts
+</span><span style="color:#408080;font-style:italic"></span>        <span style="color:#408080;font-style:italic">//fmt points to string &#34;s d&#34; or &#34;s&#34; or whatever string is
+</span><span style="color:#408080;font-style:italic"></span>        <span style="color:#408080;font-style:italic">//being passed.
+</span><span style="color:#408080;font-style:italic"></span>        <span style="color:#408080;font-style:italic">//ap is initialized to list of variable args (&amp;buff, &amp;var,)
+</span><span style="color:#408080;font-style:italic"></span>        va_start(ap, fmt);
+
+        <span style="color:#008000;font-weight:bold">while</span> (<span style="color:#666">*</span>fmt) {
+                <span style="color:#008000;font-weight:bold">switch</span>(<span style="color:#666">*</span>fmt) {
+                <span style="color:#008000;font-weight:bold">case</span> <span style="color:#ba2121">&#39;s&#39;</span><span style="color:#666">:</span>
+                        <span style="color:#408080;font-style:italic">//call to va_arg gives the type &amp; value of next variable arg
+</span><span style="color:#408080;font-style:italic"></span>                        <span style="color:#408080;font-style:italic">//from ap list(&amp;buff here)
+</span><span style="color:#408080;font-style:italic"></span>                        str <span style="color:#666">=</span> va_arg(ap, <span style="color:#b00040">char</span><span style="color:#666">*</span>);
+                        printf(<span style="color:#ba2121">&#34;%s</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>, str);
+                        <span style="color:#008000;font-weight:bold">break</span>;
+                <span style="color:#008000;font-weight:bold">case</span> <span style="color:#ba2121">&#39;d&#39;</span><span style="color:#666">:</span>
+                        <span style="color:#408080;font-style:italic">//call to va_arg gives the type &amp; value of next variable arg
+</span><span style="color:#408080;font-style:italic"></span>                        <span style="color:#408080;font-style:italic">//from ap list(&amp;var here)
+</span><span style="color:#408080;font-style:italic"></span>                        val <span style="color:#666">=</span> va_arg(ap, <span style="color:#b00040">int</span> <span style="color:#666">*</span>);
+                        printf(<span style="color:#ba2121">&#34;%d</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>, <span style="color:#666">*</span>val);
+                        <span style="color:#008000;font-weight:bold">break</span>;
+                }
+                <span style="color:#666">++</span>fmt;
+        }
+        <span style="color:#408080;font-style:italic">//invalidate the ap list
+</span><span style="color:#408080;font-style:italic"></span>        va_end(ap);
+
+}
+<span style="color:#b00040">int</span> <span style="color:#00f">main</span>()
+{
+        <span style="color:#b00040">char</span> buff[<span style="color:#666">10</span>] <span style="color:#666">=</span> <span style="color:#ba2121">&#34;hello&#34;</span>;
+        <span style="color:#b00040">int</span> var <span style="color:#666">=</span> <span style="color:#666">100</span>;
+        <span style="color:#408080;font-style:italic">// call with 1 argument
+</span><span style="color:#408080;font-style:italic"></span>	<span style="color:#408080;font-style:italic">//fmt in foo() points to &#34;s&#34;
+</span><span style="color:#408080;font-style:italic"></span>        foo(<span style="color:#ba2121">&#34;s&#34;</span>, <span style="color:#666">&amp;</span>buff);
+        <span style="color:#408080;font-style:italic">// call with 2 arguments,
+</span><span style="color:#408080;font-style:italic"></span>	<span style="color:#408080;font-style:italic">//fmt in foo() points to &#34;s d&#34;
+</span><span style="color:#408080;font-style:italic"></span>        foo(<span style="color:#ba2121">&#34;s d&#34;</span>, <span style="color:#666">&amp;</span>buff, <span style="color:#666">&amp;</span>var);
+
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#666">0</span>;
+}</code></pre></div>
+<p>Above program will give the following output.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">//first call to foo()
+hello
+//second call to foo()
+hello
+100</code></pre></div>
+<h2 id="implementation">Implementation</h2>
+
+<p>The implementation uses <strong>fgets()</strong> to read the input from <strong>stdin</strong>. While the case for reading
+a string or an integer is pretty straightforward, there is a case for handling char inputs which
+is worth mentioning.
+Consider the program below to read two chars from <strong>stdin</strong></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#b00040">int</span> <span style="color:#00f">main</span>()
+{
+        <span style="color:#b00040">int</span> i <span style="color:#666">=</span> <span style="color:#666">0</span>;
+        <span style="color:#b00040">char</span> ch;
+        <span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> <span style="color:#666">2</span>; i<span style="color:#666">++</span>) {
+                scanf(<span style="color:#ba2121">&#34;%c&#34;</span>, <span style="color:#666">&amp;</span>ch);
+                printf(<span style="color:#ba2121">&#34;Input number[%d]: %c &#34;</span>, i, ch);
+        }
+        printf(<span style="color:#ba2121">&#34;</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>);
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#666">0</span>;
+}</code></pre></div>
+<p>On giving the below input to the above program, we can see</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Input:
+ a b
+
+Output:
+Input number[0]: a Input number[1]:</code></pre></div>
+<p>the program does not print the second char <code>b</code> as expected. Well, it may appear
+that the program has failed to read, it is not the case actually. If you notice
+the input, there is a whitespace after <code>a</code> (between <code>a</code> &amp; <code>b</code>). whitespace is also a char and this
+is what is read by our program. Since, we are only reading two chars,the loop
+terminates and the program ends.</p>
+
+<p>If you want to read the second char <code>b</code> in this case or ignore whitespaces/newline
+in general, you will have to add a whitespace before <code>%c</code> in your program as shown
+below</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#b00040">int</span> <span style="color:#00f">main</span>()
+{
+        <span style="color:#b00040">int</span> i <span style="color:#666">=</span> <span style="color:#666">0</span>;
+        <span style="color:#b00040">char</span> ch;
+        <span style="color:#008000;font-weight:bold">for</span> (i <span style="color:#666">=</span> <span style="color:#666">0</span>; i <span style="color:#666">&lt;</span> <span style="color:#666">2</span>; i<span style="color:#666">++</span>) {
+		<span style="color:#408080;font-style:italic">//whitespace added before %c
+</span><span style="color:#408080;font-style:italic"></span>                scanf(<span style="color:#ba2121">&#34; %c&#34;</span>, <span style="color:#666">&amp;</span>ch);
+                printf(<span style="color:#ba2121">&#34;Input number[%d]: %c &#34;</span>, i, ch);
+        }
+        printf(<span style="color:#ba2121">&#34;</span><span style="color:#b62;font-weight:bold">\n</span><span style="color:#ba2121">&#34;</span>);
+        <span style="color:#008000;font-weight:bold">return</span> <span style="color:#666">0</span>;
+}</code></pre></div>
+<p>Now on giving the same input to the above program, second char is also printed.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Input:
+ a b
+
+Output:
+Input number[0]: a Input number[1]: b</code></pre></div>
+<p>In case of integer or string, this behaviour is not observed. By default, any whitespace
+or newline given as input is ignored.</p>
+
+<p>Keeping the above things in mind, we can now discuss the implementation of <strong>simplescanf()</strong></p>
+
+<p>1.We read from <strong>stdin</strong> using <strong>fillbuff()</strong> which in turn uses fgets().</p>
+
+<p>2.<code>fmt</code> points to the string(e.g &ldquo;%s %d %c&rdquo;) passed to <strong>simplescanf()</strong>.</p>
+
+<p>3.skip any whitespace in <code>fmt</code> using <strong>isspace()</strong>. <code>space</code> variable is used to handle the case of char input
+as discussed above.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">......
+......
+<span style="color:#408080;font-style:italic">//fillbuff returns pointer to a buffer read through fgets()
+</span><span style="color:#408080;font-style:italic"></span>bptr <span style="color:#666">=</span> fillbuff(buff);
+<span style="color:#008000;font-weight:bold">while</span> (<span style="color:#666">*</span>fmt) {
+	len <span style="color:#666">=</span> <span style="color:#666">0</span>;
+	<span style="color:#408080;font-style:italic">//skip any space chars in fmt
+</span><span style="color:#408080;font-style:italic"></span>	<span style="color:#008000;font-weight:bold">while</span> (<span style="color:#666">*</span>fmt <span style="color:#666">&amp;&amp;</span> isspace(<span style="color:#666">*</span>fmt)) {
+		<span style="color:#666">++</span>fmt;
+		<span style="color:#408080;font-style:italic">// useful to handle the case of char
+</span><span style="color:#408080;font-style:italic"></span>		<span style="color:#666">++</span>space;
+	}
+.....
+.....</code></pre></div>
+<p>The flow for reading integer and string is similar. Below is the code for reading a string.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> <span style="color:#008000;font-weight:bold">if</span> (<span style="color:#666">*</span>fmt <span style="color:#666">==</span> <span style="color:#ba2121">&#39;s&#39;</span>) {
+ 	<span style="color:#408080;font-style:italic">//check() returns first non-space character or \n
+</span><span style="color:#408080;font-style:italic"></span> 	<span style="color:#408080;font-style:italic">//by parsing buffer pointer bptr
+</span><span style="color:#408080;font-style:italic"></span>	 bptr <span style="color:#666">=</span> check(bptr);
+	 <span style="color:#008000;font-weight:bold">if</span> (<span style="color:#666">*</span>bptr <span style="color:#666">==</span> <span style="color:#ba2121">&#39;\n&#39;</span>) {
+	 <span style="color:#408080;font-style:italic">//if we encounter newline, we again have to read from stdin. 
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//remember how scanf() works when you press enter ? It waits until 
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//you enter an input other than newline or space
+</span><span style="color:#408080;font-style:italic"></span>		 bptr <span style="color:#666">=</span> fillbuff(buff);
+		 <span style="color:#008000;font-weight:bold">continue</span>;
+	 }
+	 <span style="color:#408080;font-style:italic">// get the next arguments which is address of the variable where
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//string is going to be saved
+</span><span style="color:#408080;font-style:italic"></span>	 str <span style="color:#666">=</span> va_arg(ap, <span style="color:#b00040">char</span> <span style="color:#666">*</span>);
+	 <span style="color:#408080;font-style:italic">//get the length of chars we are going to read
+</span><span style="color:#408080;font-style:italic"></span>	 len <span style="color:#666">=</span> strcspn(bptr, SPACE);
+	 <span style="color:#408080;font-style:italic">//copy the &#39;len&#39; chars from bptr to the destination str
+</span><span style="color:#408080;font-style:italic"></span>	 strncpy(str, bptr, len);
+	 <span style="color:#408080;font-style:italic">//move the buffer pointer to point to element after &#39;len&#39; chars
+</span><span style="color:#408080;font-style:italic"></span>	 bptr <span style="color:#666">+=</span> len;
+	 <span style="color:#408080;font-style:italic">//increase the count by 1 as we have read an input
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#666">++</span>count;
+	 <span style="color:#408080;font-style:italic">//reset the space to 0. This is to check space for %c case
+</span><span style="color:#408080;font-style:italic"></span>	 space <span style="color:#666">=</span> <span style="color:#666">0</span>;
+ }</code></pre></div>
+<p>The comments explain what is happening in the code. <code>scanf()</code> waits for an input
+other than whitespace/newline in case of integers/string. Hence, we make sure that
+we are reading a non-sapce character from stdin in our case too.</p>
+
+<p>The flow for reading char is similar to strings/integer, except for the special case
+of char(with space or without - discussed above).</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"> <span style="color:#008000;font-weight:bold">else</span> <span style="color:#00f">if</span> (<span style="color:#666">*</span>fmt <span style="color:#666">==</span> <span style="color:#ba2121">&#39;c&#39;</span>) {
+ 	<span style="color:#408080;font-style:italic">//only one char is going to be read
+</span><span style="color:#408080;font-style:italic"></span>	 len <span style="color:#666">=</span> <span style="color:#666">1</span>;
+	 <span style="color:#408080;font-style:italic">//we check for any space before &#39;%c&#39;
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//It will decide whether to ignore or read whitespace/newline
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#008000;font-weight:bold">if</span> (space <span style="color:#666">&gt;</span> <span style="color:#666">0</span>) {
+	 	<span style="color:#408080;font-style:italic">// if space is greater than zero, behaviour is similar to
+</span><span style="color:#408080;font-style:italic"></span>		<span style="color:#408080;font-style:italic">// reading integer/string. read again from stdin until a 
+</span><span style="color:#408080;font-style:italic"></span>		<span style="color:#408080;font-style:italic">//non-space char is entered.
+</span><span style="color:#408080;font-style:italic"></span>		 bptr <span style="color:#666">=</span> check(bptr);
+		 <span style="color:#008000;font-weight:bold">if</span> (<span style="color:#666">*</span>bptr <span style="color:#666">==</span> <span style="color:#ba2121">&#39;\n&#39;</span>) {
+			 bptr <span style="color:#666">=</span> fillbuff(buff);
+			 <span style="color:#008000;font-weight:bold">continue</span>;
+		 }
+	 }
+	 <span style="color:#408080;font-style:italic">//At this point we are done with the case where whitespace is 
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//before %c. Now we just want to copy &amp; save the char to our variable
+</span><span style="color:#408080;font-style:italic"></span>	<span style="color:#408080;font-style:italic">//get the variable - char read from stdin will be saved in it
+</span><span style="color:#408080;font-style:italic"></span>	 str <span style="color:#666">=</span> va_arg(ap, <span style="color:#b00040">char</span> <span style="color:#666">*</span>);
+	 <span style="color:#408080;font-style:italic">//copy char to str
+</span><span style="color:#408080;font-style:italic"></span>	 strncpy(str, bptr, len);
+	 <span style="color:#408080;font-style:italic">//if newline was entered, we need to check for any inputs entered
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//after newline
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#008000;font-weight:bold">if</span> (<span style="color:#666">*</span>bptr <span style="color:#666">==</span> <span style="color:#ba2121">&#39;\n&#39;</span>) {
+		 bptr <span style="color:#666">=</span> fillbuff(buff);
+		 <span style="color:#408080;font-style:italic">//bptr is updated
+</span><span style="color:#408080;font-style:italic"></span>		 len <span style="color:#666">=</span> <span style="color:#666">0</span>;
+	 }
+	 <span style="color:#408080;font-style:italic">//if newline was not entered we adjust bptr by +1(one char read)
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//if it was newline, bptr is already updated in the if conition
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#408080;font-style:italic">//above
+</span><span style="color:#408080;font-style:italic"></span>	 bptr <span style="color:#666">+=</span> len;
+	 <span style="color:#408080;font-style:italic">//increase count of input read
+</span><span style="color:#408080;font-style:italic"></span>	 <span style="color:#666">++</span>count;
+	 <span style="color:#408080;font-style:italic">//reset space to zero
+</span><span style="color:#408080;font-style:italic"></span>	 space <span style="color:#666">=</span> <span style="color:#666">0</span>;
+ }</code></pre></div>
+<h2 id="usage">Usage</h2>
+
+<p><code>simplescanf()</code> can be used the same way one would use <code>scanf()</code></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">simplescanf(&#34; %c %d %s&#34;, &amp;ch, &amp;var, &amp;buff);</code></pre></div>
+<p>Code for <code>simplescanf()</code> can be found <a href="https://github.com/kumarsourav/Simple-Scanf/blob/master/simplescanf.c">here</a></p>
+</p>
+</div>
+
+
+  <p>Written on Aug 20, 2018.</p>
+
+
+<footer>
+	<p>&copy; 2018 All rights reserved.</p>
+</footer>
+</body>
+</html>

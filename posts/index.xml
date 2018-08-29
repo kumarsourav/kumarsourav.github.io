@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>/dev/random</title>
-    <link>https://kumarsourav.github.io/</link>
-    <description>Recent content on /dev/random</description>
+    <title>Posts on /dev/random</title>
+    <link>https://kumarsourav.github.io/posts/</link>
+    <description>Recent content in Posts on /dev/random</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 20 Aug 2018 19:39:13 +0530</lastBuildDate>
     
-        <atom:link href="https://kumarsourav.github.io/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://kumarsourav.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -245,31 +245,6 @@ of char(with space or without - discussed above).&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;simplescanf()&lt;/code&gt; can be used the same way one would use &lt;code&gt;scanf()&lt;/code&gt;&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-text&#34; data-lang=&#34;text&#34;&gt;simplescanf(&amp;#34; %c %d %s&amp;#34;, &amp;amp;ch, &amp;amp;var, &amp;amp;buff);&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Code for &lt;code&gt;simplescanf()&lt;/code&gt; can be found &lt;a href=&#34;https://github.com/kumarsourav/Simple-Scanf/blob/master/simplescanf.c&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Archives</title>
-      <link>https://kumarsourav.github.io/archives/</link>
-      <pubDate>Wed, 15 Aug 2018 20:34:47 +0530</pubDate>
-      
-      <guid>https://kumarsourav.github.io/archives/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>About</title>
-      <link>https://kumarsourav.github.io/about/</link>
-      <pubDate>Wed, 15 Aug 2018 20:32:37 +0530</pubDate>
-      
-      <guid>https://kumarsourav.github.io/about/</guid>
-      <description>&lt;p&gt;Hello, Welcome to my blog.&lt;/p&gt;
-
-&lt;p&gt;This blog is my attempt to document things that I learn and find interesting.&lt;/p&gt;
-
-&lt;p&gt;You can find me on &lt;a href=&#34;https://github.com/kumarsourav&#34;&gt;Github&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;My email address is &lt;a href=&#34;mailto:sourav.kir@gmail.com&#34;&gt;sourav.kir@gmail.com&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
