@@ -6,10 +6,239 @@
     <description>Recent content in Posts on /dev/random</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 20 Aug 2018 19:39:13 +0530</lastBuildDate>
+    <lastBuildDate>Sat, 01 Sep 2018 21:18:08 +0530</lastBuildDate>
     
         <atom:link href="https://kumarsourav.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Matplotlib Animation</title>
+      <link>https://kumarsourav.github.io/posts/matplotlibanimation/</link>
+      <pubDate>Sat, 01 Sep 2018 21:18:08 +0530</pubDate>
+      
+      <guid>https://kumarsourav.github.io/posts/matplotlibanimation/</guid>
+      <description>
+
+&lt;p&gt;While creating a simulation for &lt;a href=&#34;https://github.com/kumarsourav/Monte-Carlo-Simulation/tree/master/Monty-Hall-Problem&#34;&gt;Monty Hall Problem&lt;/a&gt;,
+I had to generate a gif and live plot of the simulation. Matplotlib provides Animation methods for doing exactly
+what I wanted. I played with the animation methods and created live graph plots for my simulation. In this post,
+I would like to share my experience and learning.&lt;/p&gt;
+
+&lt;h2 id=&#34;simple-animation&#34;&gt;Simple Animation&lt;/h2&gt;
+
+&lt;p&gt;First let&amp;rsquo;s look at a basic animation of sin(x) where sin(x) values are updated every frame.
+The gif looks something like this.
+&lt;img src=&#34;https://kumarsourav.github.io/img/simple.gif&#34; alt=&#34;&#34; /&gt;
+Below program is used to create the above gif.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;numpy&lt;/span&gt; &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;np&lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;matplotlib.pyplot&lt;/span&gt; &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;plt&lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;matplotlib.animation&lt;/span&gt; &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;animation&lt;/span&gt;
+
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;init&lt;/span&gt;():
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#set the min-max tick of Y axis&lt;/span&gt;
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_ylim(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2.1&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;2.1&lt;/span&gt;)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#set the label for Y axis&lt;/span&gt;
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_ylabel(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;sin(x)&amp;#39;&lt;/span&gt;)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#set the min max limit for X axis&lt;/span&gt;
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlim(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi, &lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#set the label for X asix&lt;/span&gt;
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlabel(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;radians&amp;#39;&lt;/span&gt;)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#set the legend fontsize&lt;/span&gt;
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;legend(fontsize &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;x-small&amp;#39;&lt;/span&gt;)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#initally no data to plot&lt;/span&gt;
+        line&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_data(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;)
+        &lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#return Line2D object&lt;/span&gt;
+	&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;return&lt;/span&gt; line,
+
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;run&lt;/span&gt;(i):
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#generate x values for this frame.&lt;/span&gt;
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#It remains same for all frames for this example.&lt;/span&gt;
+        x &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi, &lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi, &lt;span style=&#34;color:#666&#34;&gt;1000&lt;/span&gt;)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;# update y values. Notice &amp;#39;x+i&amp;#39; to generate new y values&lt;/span&gt;
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;# everytime run() is called&lt;/span&gt;
+        y &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;sin(x&lt;span style=&#34;color:#666&#34;&gt;+&lt;/span&gt;i)
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;# sets the values for x and y for plotting&lt;/span&gt;
+        line&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_data(x, y)
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;return&lt;/span&gt; line,
+
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;# Create a figure and just one subplot&lt;/span&gt;
+fig, ax &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;subplots()
+
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;# Get the line object for drawing. we can pass line width(lw)&lt;/span&gt;
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#and set label.&lt;/span&gt;
+line, &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;plot(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, lw &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt;, label &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;sin(x)&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#This is the main animation routine&lt;/span&gt;
+ani &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; animation&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;FuncAnimation(fig, run, blit&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, interval&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;150&lt;/span&gt;,
+                                        repeat&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, init_func&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;init)
+plt&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;show()&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Lets walk through the code to understand the way it works.&lt;/p&gt;
+
+&lt;p&gt;1) First we need to do some basic setup to plot our graph.&lt;/p&gt;
+
+&lt;p&gt;Below code creates a figure and subplot on which the graph will be
+plotted. Initially, there is no line to plot. So, &amp;lsquo;0&amp;rsquo; &amp;amp; &amp;lsquo;0&amp;rsquo; is passed
+for &lt;code&gt;x&lt;/code&gt; &amp;amp; &lt;code&gt;y&lt;/code&gt; values in &lt;code&gt;plot()&lt;/code&gt;. You can also pass the line width
+&lt;code&gt;lw&lt;/code&gt; and any &lt;code&gt;label&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;fig, ax &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;subplots()
+line, &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;plot(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, lw &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt;, label &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;sin(x)&amp;#39;&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;2) Then we need to set up an init function to be called once before first frame.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;init()&lt;/code&gt; function is called before drawing the first frame to provide a clean slate to draw on.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;init&lt;/span&gt;():
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_ylim(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2.1&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;2.1&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_ylabel(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;sin(x)&amp;#39;&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlim(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi, &lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlabel(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;radians&amp;#39;&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;legend(fontsize &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;x-small&amp;#39;&lt;/span&gt;)
+        line&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_data(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;)
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;return&lt;/span&gt; line,&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here we just set the label for X and Y axis and also their respective limits(min-max).
+We return a Line2D object which will be used to update the graph.&lt;/p&gt;
+
+&lt;p&gt;3) Now, we need to setup a function to update xdata and ydata of our graph for each frame.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;run()&lt;/code&gt; will be called at each frame to generate x and y values for the graph for each frame.
+It basically takes the frame number &lt;code&gt;i&lt;/code&gt; as input and then generates y values using sin(x+i).&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;run&lt;/span&gt;(i):
+        x &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi, &lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;pi, &lt;span style=&#34;color:#666&#34;&gt;1000&lt;/span&gt;)
+        y &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;sin(x&lt;span style=&#34;color:#666&#34;&gt;+&lt;/span&gt;i)
+        line&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_data(x, y)
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;return&lt;/span&gt; line,&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To generate x values we are using &lt;code&gt;np.linspace()&lt;/code&gt; in every frame with the same args.
+Hence, there is no need to change limits for X axis. Later in another example,
+I will show how X axis limits can be changed with varying x data.&lt;/p&gt;
+
+&lt;p&gt;4) Lastly, we need to create the animation object.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;animation.FuncAnimation()&lt;/code&gt; creates an animation object. Above functions are passed
+as params to this function.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;ani &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; animation&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;FuncAnimation(fig, run, blit&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, interval&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;150&lt;/span&gt;,
+                                        repeat&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, init_func&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;init)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3 id=&#34;few-more-params&#34;&gt;Few more Params&lt;/h3&gt;
+
+&lt;p&gt;Few other params of &lt;code&gt;FuncAnimation()&lt;/code&gt; are discussed below.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;blit&lt;/code&gt; param comes from &amp;ldquo;blitting&amp;rdquo; in graphics. It is a technique where anything static
+in animation will be drawn once. By default, this option is false. If used appropriately, it
+can help in performace gain for plotting the graph.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;interval&lt;/code&gt; decides the rate at which subsequent frames will generated. In this program, each frame is generated
+after  a delay of 150 milliseconds.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;repeat&lt;/code&gt; if set to &lt;code&gt;true&lt;/code&gt; will restart the animation from beginning once all the frames are drawn.&lt;/p&gt;
+
+&lt;h2 id=&#34;save-gif-of-animation&#34;&gt;Save GIF of Animation&lt;/h2&gt;
+
+&lt;p&gt;If you want to save a gif of the animation, you need to add below line to the program&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#This creates a gif using imagemagick and saves it&lt;/span&gt;
+ani&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;save(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;./simple.gif&amp;#39;&lt;/span&gt;, writer&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;imagemagick&amp;#39;&lt;/span&gt;, fps&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;5&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will work only if &lt;a href=&#34;https://www.imagemagick.org/script/download.php&#34;&gt;imagemagick&lt;/a&gt; is installed on your system.
+To control the speed of frames, configure &lt;code&gt;fps&lt;/code&gt;(frames per second). In this example, we are using 5 frames per second.
+It means 5 frames will be drawn every second.
+If you want to configure the  number of frames saved in the gif, set &lt;code&gt;save_count&lt;/code&gt; in &lt;code&gt;FuncAnimation()&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;ani &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; animation&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;FuncAnimation(fig, run, blit&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, interval&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;150&lt;/span&gt;,
+                                        repeat&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, init_func&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;init, save_count&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;10&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will save only 10 frames in our gif.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#frames &lt;/span&gt;
+ani &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; animation&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;FuncAnimation(fig, run, frames&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;gen, blit&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, interval&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;150&lt;/span&gt;,
+                                        repeat&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, init_func&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;init)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Also, if you want to generate fixed number of frames, say 500, you can pass &lt;code&gt;frames = 500&lt;/code&gt; to &lt;code&gt;FuncAnimation()&lt;/code&gt;.
+In this case graph will run until 500 frames are generated.&lt;/p&gt;
+
+&lt;h2 id=&#34;animation-with-generator-function-and-rescaling-x-axis&#34;&gt;Animation with Generator Function and Rescaling X axis&lt;/h2&gt;
+
+&lt;p&gt;In the example discussed above, &lt;code&gt;run()&lt;/code&gt; accepts frame number &lt;code&gt;i&lt;/code&gt; as input. However, this function can accept
+other source of data too instead of  frame number &lt;code&gt;i&lt;/code&gt;. For example, a generator function can be passed to &lt;code&gt;run()&lt;/code&gt;
+instead of &lt;code&gt;i&lt;/code&gt; to generate new x and y values. &lt;code&gt;frames&lt;/code&gt; parameter is used in &lt;code&gt;FuncAnimation()&lt;/code&gt; to
+pass any other source of data to this function. For example, a generator function, say &lt;code&gt;simulate()&lt;/code&gt;, can
+be passed as &lt;code&gt;frames=simulate&lt;/code&gt; to &lt;code&gt;FuncAnimation()&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Besides, the X Axis limits(0-20) in the previous example is fixed. What if we need to rescale it as xdata increases.
+Below gif is generated by using a generator function and X axis is rescaled according to new xdata.
+&lt;img src=&#34;https://kumarsourav.github.io/img/simplev2.gif&#34; alt=&#34;&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And here is the code&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;numpy&lt;/span&gt; &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;np&lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;matplotlib.pyplot&lt;/span&gt; &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;plt&lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;import&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;matplotlib.animation&lt;/span&gt; &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;as&lt;/span&gt; &lt;span style=&#34;color:#00f;font-weight:bold&#34;&gt;animation&lt;/span&gt;
+
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#generator function for x and y data&lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;simulate&lt;/span&gt;():
+        x &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;linspace(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;200&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;1000&lt;/span&gt;)
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color:#a2f;font-weight:bold&#34;&gt;in&lt;/span&gt; x:
+                &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;yield&lt;/span&gt; i, np&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;sin(i)
+
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#init function &lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;init&lt;/span&gt;():
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_ylim(&lt;span style=&#34;color:#666&#34;&gt;-&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;2.1&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;2.1&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_ylabel(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;sin(x)&amp;#39;&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlim(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;20&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlabel(&lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;radians&amp;#39;&lt;/span&gt;)
+        ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;legend(fontsize &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;x-small&amp;#39;&lt;/span&gt;)
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;del&lt;/span&gt; xdata[:]
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;del&lt;/span&gt; ydata[:]
+        line&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_data(xdata, ydata)
+	&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;return&lt;/span&gt; line,
+
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#data is the generator func simulate()&lt;/span&gt;
+&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;run&lt;/span&gt;(data):
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#get x,y data from simulate()&lt;/span&gt;
+        x, y &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; data
+        xdata&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;append(x)
+        ydata&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;append(y)
+
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#get limits of X axis&lt;/span&gt;
+        xmin, xmax &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;get_xlim()
+
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#if x is over max limit of X axis, rescale it&lt;/span&gt;
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;if&lt;/span&gt; x &lt;span style=&#34;color:#666&#34;&gt;&amp;gt;=&lt;/span&gt; xmax:
+		&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#rescale &lt;/span&gt;
+                ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlim(xmin, &lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;xmax)
+		&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#redraw&lt;/span&gt;
+                ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;figure&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;canvas&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;draw()
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#update x and y data&lt;/span&gt;
+        line&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_data(xdata, ydata)
+        &lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;return&lt;/span&gt; line,
+
+fig, ax &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; plt&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;subplots()
+line, &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;plot([], [], lw &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#666&#34;&gt;1&lt;/span&gt;, label &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ba2121&#34;&gt;&amp;#39;sin(x)&amp;#39;&lt;/span&gt;)
+xdata, ydata &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; [], []
+&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#frames=simulate sets the generator func&lt;/span&gt;
+ani &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; animation&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;FuncAnimation(fig, run, frames&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;simulate, blit&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;False, interval&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;10&lt;/span&gt;,
+                                        repeat&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;True, init_func&lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt;init)
+plt&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;show()&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In this example, we are using a generator function &lt;code&gt;simulate()&lt;/code&gt; to generate x &amp;amp; y data. We pass
+it to the anim object using &lt;code&gt;frames=simulate&lt;/code&gt; param. The &lt;code&gt;run()&lt;/code&gt; function argument &lt;code&gt;data&lt;/code&gt; refers to
+the generator function &lt;code&gt;simulate()&lt;/code&gt;. It is used to get x &amp;amp; y values to create new frame.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;run&lt;/span&gt;(data):
+        &lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#get x,y data from simulate()&lt;/span&gt;
+        x, y &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; data
+        xdata&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;append(x)
+        ydata&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;append(y)
+&lt;span style=&#34;color:#666&#34;&gt;.....&lt;/span&gt;
+&lt;span style=&#34;color:#666&#34;&gt;.....&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Also, our initial X Axis limit is set to &lt;code&gt;(0, 20)&lt;/code&gt; in &lt;code&gt;init()&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlim(&lt;span style=&#34;color:#666&#34;&gt;0&lt;/span&gt;, &lt;span style=&#34;color:#666&#34;&gt;20&lt;/span&gt;)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;But as xdata increases and goes beyond the limit 20, we need to rescale it.
+We are increasing the max limit to twice the previous limit,e.g, 40, 60,&amp;hellip;.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#00f&#34;&gt;run&lt;/span&gt;(data):
+&lt;span style=&#34;color:#666&#34;&gt;.....&lt;/span&gt;
+&lt;span style=&#34;color:#666&#34;&gt;.....&lt;/span&gt;
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#get limits of X axis&lt;/span&gt;
+	xmin, xmax &lt;span style=&#34;color:#666&#34;&gt;=&lt;/span&gt; ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;get_xlim()
+
+	&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#if x is over max limit of X axis, rescale it&lt;/span&gt;
+	&lt;span style=&#34;color:#008000;font-weight:bold&#34;&gt;if&lt;/span&gt; x &lt;span style=&#34;color:#666&#34;&gt;&amp;gt;=&lt;/span&gt; xmax:
+		&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#rescale&lt;/span&gt;
+		ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;set_xlim(xmin, &lt;span style=&#34;color:#666&#34;&gt;2&lt;/span&gt;&lt;span style=&#34;color:#666&#34;&gt;*&lt;/span&gt;xmax)
+		&lt;span style=&#34;color:#408080;font-style:italic&#34;&gt;#redraw&lt;/span&gt;
+		ax&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;figure&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;canvas&lt;span style=&#34;color:#666&#34;&gt;.&lt;/span&gt;draw()
+&lt;span style=&#34;color:#666&#34;&gt;.....&lt;/span&gt;
+&lt;span style=&#34;color:#666&#34;&gt;.....&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That&amp;rsquo;s all for this post. Hope it helps!&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>SimpleScanf</title>

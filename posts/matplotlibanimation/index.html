@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Matplotlib Animation</title>
+	
+	<meta name="description" content="">
+	<meta name="image" content="">
+	
+	<meta itemprop="name" content="Matplotlib Animation">
+	<meta itemprop="description" content="">
+	<meta itemprop="image" content="">
+	
+	<meta name="og:title" content="Matplotlib Animation">
+	<meta name="og:description" content="">
+	
+	<meta name="og:url" content="https://kumarsourav.github.io/posts/matplotlibanimation/">
+	<meta name="og:site_name" content="Matplotlib Animation">
+	<meta name="og:type" content="article">
+	
+	<meta name="article:tag" content="">
+	<link rel="stylesheet" type="text/css" href="https://kumarsourav.github.io/css/style.css">
+	
+	
+<script>
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-124815281-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+</head>
+
+<body>
+
+<header>
+	
+	<a href="https://kumarsourav.github.io/" style="float: left;color:#42a5f5;">/dev/random</a>
+	
+	&nbsp;&nbsp;<a href="https://kumarsourav.github.io/archives/" style="color:#777;">Archives</a>&nbsp;&nbsp;<a href="https://kumarsourav.github.io/about/" style="color:#777;">About</a>
+	
+	<a href="https://kumarsourav.github.io/posts/index.xml" style="color:#777;float: right;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+</header>
+
+
+<div class="content">
+  <h5>Matplotlib Animation</h5>
+  <aside></aside>
+  <p>
+
+<p>While creating a simulation for <a href="https://github.com/kumarsourav/Monte-Carlo-Simulation/tree/master/Monty-Hall-Problem">Monty Hall Problem</a>,
+I had to generate a gif and live plot of the simulation. Matplotlib provides Animation methods for doing exactly
+what I wanted. I played with the animation methods and created live graph plots for my simulation. In this post,
+I would like to share my experience and learning.</p>
+
+<h2 id="simple-animation">Simple Animation</h2>
+
+<p>First let&rsquo;s look at a basic animation of sin(x) where sin(x) values are updated every frame.
+The gif looks something like this.
+<img src="/img/simple.gif" alt="" />
+Below program is used to create the above gif.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">numpy</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">np</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">matplotlib.pyplot</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">plt</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">matplotlib.animation</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">animation</span>
+
+<span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">init</span>():
+	<span style="color:#408080;font-style:italic">#set the min-max tick of Y axis</span>
+        ax<span style="color:#666">.</span>set_ylim(<span style="color:#666">-</span><span style="color:#666">2.1</span>, <span style="color:#666">2.1</span>)
+	<span style="color:#408080;font-style:italic">#set the label for Y axis</span>
+        ax<span style="color:#666">.</span>set_ylabel(<span style="color:#ba2121">&#39;sin(x)&#39;</span>)
+	<span style="color:#408080;font-style:italic">#set the min max limit for X axis</span>
+        ax<span style="color:#666">.</span>set_xlim(<span style="color:#666">-</span><span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi, <span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi)
+	<span style="color:#408080;font-style:italic">#set the label for X asix</span>
+        ax<span style="color:#666">.</span>set_xlabel(<span style="color:#ba2121">&#39;radians&#39;</span>)
+	<span style="color:#408080;font-style:italic">#set the legend fontsize</span>
+        ax<span style="color:#666">.</span>legend(fontsize <span style="color:#666">=</span> <span style="color:#ba2121">&#39;x-small&#39;</span>)
+	<span style="color:#408080;font-style:italic">#initally no data to plot</span>
+        line<span style="color:#666">.</span>set_data(<span style="color:#666">0</span>, <span style="color:#666">0</span>)
+        <span style="color:#408080;font-style:italic">#return Line2D object</span>
+	<span style="color:#008000;font-weight:bold">return</span> line,
+
+<span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">run</span>(i):
+	<span style="color:#408080;font-style:italic">#generate x values for this frame.</span>
+	<span style="color:#408080;font-style:italic">#It remains same for all frames for this example.</span>
+        x <span style="color:#666">=</span> np<span style="color:#666">.</span>linspace(<span style="color:#666">-</span><span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi, <span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi, <span style="color:#666">1000</span>)
+	<span style="color:#408080;font-style:italic"># update y values. Notice &#39;x+i&#39; to generate new y values</span>
+	<span style="color:#408080;font-style:italic"># everytime run() is called</span>
+        y <span style="color:#666">=</span> np<span style="color:#666">.</span>sin(x<span style="color:#666">+</span>i)
+	<span style="color:#408080;font-style:italic"># sets the values for x and y for plotting</span>
+        line<span style="color:#666">.</span>set_data(x, y)
+        <span style="color:#008000;font-weight:bold">return</span> line,
+
+<span style="color:#408080;font-style:italic"># Create a figure and just one subplot</span>
+fig, ax <span style="color:#666">=</span> plt<span style="color:#666">.</span>subplots()
+
+<span style="color:#408080;font-style:italic"># Get the line object for drawing. we can pass line width(lw)</span>
+<span style="color:#408080;font-style:italic">#and set label.</span>
+line, <span style="color:#666">=</span> ax<span style="color:#666">.</span>plot(<span style="color:#666">0</span>, <span style="color:#666">0</span>, lw <span style="color:#666">=</span> <span style="color:#666">1</span>, label <span style="color:#666">=</span> <span style="color:#ba2121">&#39;sin(x)&#39;</span>)
+
+<span style="color:#408080;font-style:italic">#This is the main animation routine</span>
+ani <span style="color:#666">=</span> animation<span style="color:#666">.</span>FuncAnimation(fig, run, blit<span style="color:#666">=</span>False, interval<span style="color:#666">=</span><span style="color:#666">150</span>,
+                                        repeat<span style="color:#666">=</span>False, init_func<span style="color:#666">=</span>init)
+plt<span style="color:#666">.</span>show()</code></pre></div>
+<p>Lets walk through the code to understand the way it works.</p>
+
+<p>1) First we need to do some basic setup to plot our graph.</p>
+
+<p>Below code creates a figure and subplot on which the graph will be
+plotted. Initially, there is no line to plot. So, &lsquo;0&rsquo; &amp; &lsquo;0&rsquo; is passed
+for <code>x</code> &amp; <code>y</code> values in <code>plot()</code>. You can also pass the line width
+<code>lw</code> and any <code>label</code></p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">fig, ax <span style="color:#666">=</span> plt<span style="color:#666">.</span>subplots()
+line, <span style="color:#666">=</span> ax<span style="color:#666">.</span>plot(<span style="color:#666">0</span>, <span style="color:#666">0</span>, lw <span style="color:#666">=</span> <span style="color:#666">1</span>, label <span style="color:#666">=</span> <span style="color:#ba2121">&#39;sin(x)&#39;</span>)</code></pre></div>
+<p>2) Then we need to set up an init function to be called once before first frame.</p>
+
+<p>The <code>init()</code> function is called before drawing the first frame to provide a clean slate to draw on.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">init</span>():
+        ax<span style="color:#666">.</span>set_ylim(<span style="color:#666">-</span><span style="color:#666">2.1</span>, <span style="color:#666">2.1</span>)
+        ax<span style="color:#666">.</span>set_ylabel(<span style="color:#ba2121">&#39;sin(x)&#39;</span>)
+        ax<span style="color:#666">.</span>set_xlim(<span style="color:#666">-</span><span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi, <span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi)
+        ax<span style="color:#666">.</span>set_xlabel(<span style="color:#ba2121">&#39;radians&#39;</span>)
+        ax<span style="color:#666">.</span>legend(fontsize <span style="color:#666">=</span> <span style="color:#ba2121">&#39;x-small&#39;</span>)
+        line<span style="color:#666">.</span>set_data(<span style="color:#666">0</span>, <span style="color:#666">0</span>)
+        <span style="color:#008000;font-weight:bold">return</span> line,</code></pre></div>
+<p>Here we just set the label for X and Y axis and also their respective limits(min-max).
+We return a Line2D object which will be used to update the graph.</p>
+
+<p>3) Now, we need to setup a function to update xdata and ydata of our graph for each frame.</p>
+
+<p><code>run()</code> will be called at each frame to generate x and y values for the graph for each frame.
+It basically takes the frame number <code>i</code> as input and then generates y values using sin(x+i).</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">run</span>(i):
+        x <span style="color:#666">=</span> np<span style="color:#666">.</span>linspace(<span style="color:#666">-</span><span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi, <span style="color:#666">2</span><span style="color:#666">*</span>np<span style="color:#666">.</span>pi, <span style="color:#666">1000</span>)
+        y <span style="color:#666">=</span> np<span style="color:#666">.</span>sin(x<span style="color:#666">+</span>i)
+        line<span style="color:#666">.</span>set_data(x, y)
+        <span style="color:#008000;font-weight:bold">return</span> line,</code></pre></div>
+<p>To generate x values we are using <code>np.linspace()</code> in every frame with the same args.
+Hence, there is no need to change limits for X axis. Later in another example,
+I will show how X axis limits can be changed with varying x data.</p>
+
+<p>4) Lastly, we need to create the animation object.</p>
+
+<p><code>animation.FuncAnimation()</code> creates an animation object. Above functions are passed
+as params to this function.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ani <span style="color:#666">=</span> animation<span style="color:#666">.</span>FuncAnimation(fig, run, blit<span style="color:#666">=</span>False, interval<span style="color:#666">=</span><span style="color:#666">150</span>,
+                                        repeat<span style="color:#666">=</span>False, init_func<span style="color:#666">=</span>init)</code></pre></div>
+<h3 id="few-more-params">Few more Params</h3>
+
+<p>Few other params of <code>FuncAnimation()</code> are discussed below.</p>
+
+<p><code>blit</code> param comes from &ldquo;blitting&rdquo; in graphics. It is a technique where anything static
+in animation will be drawn once. By default, this option is false. If used appropriately, it
+can help in performace gain for plotting the graph.</p>
+
+<p><code>interval</code> decides the rate at which subsequent frames will generated. In this program, each frame is generated
+after  a delay of 150 milliseconds.</p>
+
+<p><code>repeat</code> if set to <code>true</code> will restart the animation from beginning once all the frames are drawn.</p>
+
+<h2 id="save-gif-of-animation">Save GIF of Animation</h2>
+
+<p>If you want to save a gif of the animation, you need to add below line to the program</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic">#This creates a gif using imagemagick and saves it</span>
+ani<span style="color:#666">.</span>save(<span style="color:#ba2121">&#39;./simple.gif&#39;</span>, writer<span style="color:#666">=</span><span style="color:#ba2121">&#39;imagemagick&#39;</span>, fps<span style="color:#666">=</span><span style="color:#666">5</span>)</code></pre></div>
+<p>This will work only if <a href="https://www.imagemagick.org/script/download.php">imagemagick</a> is installed on your system.
+To control the speed of frames, configure <code>fps</code>(frames per second). In this example, we are using 5 frames per second.
+It means 5 frames will be drawn every second.
+If you want to configure the  number of frames saved in the gif, set <code>save_count</code> in <code>FuncAnimation()</code>.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ani <span style="color:#666">=</span> animation<span style="color:#666">.</span>FuncAnimation(fig, run, blit<span style="color:#666">=</span>False, interval<span style="color:#666">=</span><span style="color:#666">150</span>,
+                                        repeat<span style="color:#666">=</span>False, init_func<span style="color:#666">=</span>init, save_count<span style="color:#666">=</span> <span style="color:#666">10</span>)</code></pre></div>
+<p>This will save only 10 frames in our gif.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#408080;font-style:italic">#frames </span>
+ani <span style="color:#666">=</span> animation<span style="color:#666">.</span>FuncAnimation(fig, run, frames<span style="color:#666">=</span>gen, blit<span style="color:#666">=</span>False, interval<span style="color:#666">=</span><span style="color:#666">150</span>,
+                                        repeat<span style="color:#666">=</span>False, init_func<span style="color:#666">=</span>init)</code></pre></div>
+<p>Also, if you want to generate fixed number of frames, say 500, you can pass <code>frames = 500</code> to <code>FuncAnimation()</code>.
+In this case graph will run until 500 frames are generated.</p>
+
+<h2 id="animation-with-generator-function-and-rescaling-x-axis">Animation with Generator Function and Rescaling X axis</h2>
+
+<p>In the example discussed above, <code>run()</code> accepts frame number <code>i</code> as input. However, this function can accept
+other source of data too instead of  frame number <code>i</code>. For example, a generator function can be passed to <code>run()</code>
+instead of <code>i</code> to generate new x and y values. <code>frames</code> parameter is used in <code>FuncAnimation()</code> to
+pass any other source of data to this function. For example, a generator function, say <code>simulate()</code>, can
+be passed as <code>frames=simulate</code> to <code>FuncAnimation()</code>.</p>
+
+<p>Besides, the X Axis limits(0-20) in the previous example is fixed. What if we need to rescale it as xdata increases.
+Below gif is generated by using a generator function and X axis is rescaled according to new xdata.
+<img src="/img/simplev2.gif" alt="" /></p>
+
+<p>And here is the code</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">numpy</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">np</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">matplotlib.pyplot</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">plt</span>
+<span style="color:#008000;font-weight:bold">import</span> <span style="color:#00f;font-weight:bold">matplotlib.animation</span> <span style="color:#008000;font-weight:bold">as</span> <span style="color:#00f;font-weight:bold">animation</span>
+
+<span style="color:#408080;font-style:italic">#generator function for x and y data</span>
+<span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">simulate</span>():
+        x <span style="color:#666">=</span> np<span style="color:#666">.</span>linspace(<span style="color:#666">0</span>, <span style="color:#666">200</span>, <span style="color:#666">1000</span>)
+        <span style="color:#008000;font-weight:bold">for</span> i <span style="color:#a2f;font-weight:bold">in</span> x:
+                <span style="color:#008000;font-weight:bold">yield</span> i, np<span style="color:#666">.</span>sin(i)
+
+<span style="color:#408080;font-style:italic">#init function </span>
+<span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">init</span>():
+        ax<span style="color:#666">.</span>set_ylim(<span style="color:#666">-</span><span style="color:#666">2.1</span>, <span style="color:#666">2.1</span>)
+        ax<span style="color:#666">.</span>set_ylabel(<span style="color:#ba2121">&#39;sin(x)&#39;</span>)
+        ax<span style="color:#666">.</span>set_xlim(<span style="color:#666">0</span>, <span style="color:#666">20</span>)
+        ax<span style="color:#666">.</span>set_xlabel(<span style="color:#ba2121">&#39;radians&#39;</span>)
+        ax<span style="color:#666">.</span>legend(fontsize <span style="color:#666">=</span> <span style="color:#ba2121">&#39;x-small&#39;</span>)
+        <span style="color:#008000;font-weight:bold">del</span> xdata[:]
+        <span style="color:#008000;font-weight:bold">del</span> ydata[:]
+        line<span style="color:#666">.</span>set_data(xdata, ydata)
+	<span style="color:#008000;font-weight:bold">return</span> line,
+
+<span style="color:#408080;font-style:italic">#data is the generator func simulate()</span>
+<span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">run</span>(data):
+	<span style="color:#408080;font-style:italic">#get x,y data from simulate()</span>
+        x, y <span style="color:#666">=</span> data
+        xdata<span style="color:#666">.</span>append(x)
+        ydata<span style="color:#666">.</span>append(y)
+
+	<span style="color:#408080;font-style:italic">#get limits of X axis</span>
+        xmin, xmax <span style="color:#666">=</span> ax<span style="color:#666">.</span>get_xlim()
+
+	<span style="color:#408080;font-style:italic">#if x is over max limit of X axis, rescale it</span>
+        <span style="color:#008000;font-weight:bold">if</span> x <span style="color:#666">&gt;=</span> xmax:
+		<span style="color:#408080;font-style:italic">#rescale </span>
+                ax<span style="color:#666">.</span>set_xlim(xmin, <span style="color:#666">2</span><span style="color:#666">*</span>xmax)
+		<span style="color:#408080;font-style:italic">#redraw</span>
+                ax<span style="color:#666">.</span>figure<span style="color:#666">.</span>canvas<span style="color:#666">.</span>draw()
+	<span style="color:#408080;font-style:italic">#update x and y data</span>
+        line<span style="color:#666">.</span>set_data(xdata, ydata)
+        <span style="color:#008000;font-weight:bold">return</span> line,
+
+fig, ax <span style="color:#666">=</span> plt<span style="color:#666">.</span>subplots()
+line, <span style="color:#666">=</span> ax<span style="color:#666">.</span>plot([], [], lw <span style="color:#666">=</span> <span style="color:#666">1</span>, label <span style="color:#666">=</span> <span style="color:#ba2121">&#39;sin(x)&#39;</span>)
+xdata, ydata <span style="color:#666">=</span> [], []
+<span style="color:#408080;font-style:italic">#frames=simulate sets the generator func</span>
+ani <span style="color:#666">=</span> animation<span style="color:#666">.</span>FuncAnimation(fig, run, frames<span style="color:#666">=</span>simulate, blit<span style="color:#666">=</span>False, interval<span style="color:#666">=</span><span style="color:#666">10</span>,
+                                        repeat<span style="color:#666">=</span>True, init_func<span style="color:#666">=</span>init)
+plt<span style="color:#666">.</span>show()</code></pre></div>
+<p>In this example, we are using a generator function <code>simulate()</code> to generate x &amp; y data. We pass
+it to the anim object using <code>frames=simulate</code> param. The <code>run()</code> function argument <code>data</code> refers to
+the generator function <code>simulate()</code>. It is used to get x &amp; y values to create new frame.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">run</span>(data):
+        <span style="color:#408080;font-style:italic">#get x,y data from simulate()</span>
+        x, y <span style="color:#666">=</span> data
+        xdata<span style="color:#666">.</span>append(x)
+        ydata<span style="color:#666">.</span>append(y)
+<span style="color:#666">.....</span>
+<span style="color:#666">.....</span></code></pre></div>
+<p>Also, our initial X Axis limit is set to <code>(0, 20)</code> in <code>init()</code>.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ax<span style="color:#666">.</span>set_xlim(<span style="color:#666">0</span>, <span style="color:#666">20</span>)</code></pre></div>
+<p>But as xdata increases and goes beyond the limit 20, we need to rescale it.
+We are increasing the max limit to twice the previous limit,e.g, 40, 60,&hellip;.</p>
+<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#008000;font-weight:bold">def</span> <span style="color:#00f">run</span>(data):
+<span style="color:#666">.....</span>
+<span style="color:#666">.....</span>
+	<span style="color:#408080;font-style:italic">#get limits of X axis</span>
+	xmin, xmax <span style="color:#666">=</span> ax<span style="color:#666">.</span>get_xlim()
+
+	<span style="color:#408080;font-style:italic">#if x is over max limit of X axis, rescale it</span>
+	<span style="color:#008000;font-weight:bold">if</span> x <span style="color:#666">&gt;=</span> xmax:
+		<span style="color:#408080;font-style:italic">#rescale</span>
+		ax<span style="color:#666">.</span>set_xlim(xmin, <span style="color:#666">2</span><span style="color:#666">*</span>xmax)
+		<span style="color:#408080;font-style:italic">#redraw</span>
+		ax<span style="color:#666">.</span>figure<span style="color:#666">.</span>canvas<span style="color:#666">.</span>draw()
+<span style="color:#666">.....</span>
+<span style="color:#666">.....</span></code></pre></div>
+<p>That&rsquo;s all for this post. Hope it helps!</p>
+</p>
+</div>
+
+
+  <p>Written on Sep 1, 2018.</p>
+
+
+<footer>
+	<p>&copy; 2018 All rights reserved.</p>
+</footer>
+</body>
+</html>

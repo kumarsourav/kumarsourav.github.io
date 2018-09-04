@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://kumarsourav.github.io/posts/matplotlibanimation/</loc>
+    <lastmod>2018-09-01T21:18:08+05:30</lastmod>
+  </url>
+  
+  <url>
     <loc>https://kumarsourav.github.io/posts/simplescanf/</loc>
     <lastmod>2018-08-20T19:39:13+05:30</lastmod>
   </url>
@@ -19,7 +24,7 @@
   
   <url>
     <loc>https://kumarsourav.github.io/</loc>
-    <lastmod>2018-08-20T19:39:13+05:30</lastmod>
+    <lastmod>2018-09-01T21:18:08+05:30</lastmod>
     <priority>0</priority>
   </url>
   
@@ -30,7 +35,7 @@
   
   <url>
     <loc>https://kumarsourav.github.io/posts/</loc>
-    <lastmod>2018-08-20T19:39:13+05:30</lastmod>
+    <lastmod>2018-09-01T21:18:08+05:30</lastmod>
     <priority>0</priority>
   </url>
   
